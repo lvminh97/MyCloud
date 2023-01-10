@@ -13,6 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// AUTH
+Route::get('login', function () {
+    return view('auth.login');
 });
+Route::post('login', ["uses" => "Auth\LoginController@postLogin"]);
+Route::get('signup', function () {
+    return view('auth.signup');
+});
+
+// HOME
+Route::get('/', ["as" => "root_folder", "FolderController@getRootFolder"]);
+Route::get('/{id}', ["as" => "folder", "FolderController@getFolder"]);
