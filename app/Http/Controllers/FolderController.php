@@ -19,6 +19,6 @@ class FolderController extends Controller
     public function getRootFolder() {
         // return $this->getFolder("");
         echo "root";
-        return view("auth.login");
+        return view("folder");
     }
 }
