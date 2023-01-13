@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FolderController extends Controller
 {
@@ -13,12 +14,19 @@ class FolderController extends Controller
 
     public function getFolder($id){
         $item_id = $id;
-        // mkdir(public_path("Test/ABC"));
+        $resp = Storage::makeDirectory(public_path("Test/ABC"));
+        dd($resp);
+        return view("folder", [
+            "folder" => [
+                "id" => $item_id,
+                "name" => "Root Folder",
+                "public" => 1
+            ],
+            "itemList" => []
+        ]);
     }
 
     public function getRootFolder() {
-        // return $this->getFolder("");
-        echo "root";
-        return view("folder");
+        return $this->getFolder("root");
     }
 }

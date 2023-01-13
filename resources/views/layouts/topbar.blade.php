@@ -50,8 +50,8 @@
       <!-- Nav Item - User Information -->
       <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $viewParams['fullname']; ?></span>
-          <img class="img-profile rounded-circle" src="assets/img/books.png">
+          <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()["fullname"] }}</span>
+          <img class="img-profile rounded-circle" src="{{ url("img/books.png") }}">
         </a>
         <!-- Dropdown - User Information -->
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -70,9 +70,9 @@
           </a>
         </div>
       </li>
-      <!-- Logout Modal--><?php getModal("logout")?>
-      <!-- Info Modal--><?php getModal("info") ?>
-      <!-- Change Password Modal--> <?php getModal("changepass") ?>
+      <!-- Logout Modal--><?php //getModal("logout")?>
+      <!-- Info Modal--><?php //getModal("info") ?>
+      <!-- Change Password Modal--> <?php //getModal("changepass") ?>
     </ul>
   </nav>
   <!-- End of Topbar -->

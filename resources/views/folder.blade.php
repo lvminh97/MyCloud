@@ -3,96 +3,98 @@
 <body id="page-top">
   <!-- Page Wrapper -->
   <div id="wrapper">
-    <?php if($viewParams['type'] != "public") getTemplate("sidebar", $viewParams); ?>
+    @include("layouts.sidebar")
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
       <!-- Main Content -->
       <div id="content">
-        <?php if($viewParams['type'] != "public") getTemplate("topbar", $viewParams); ?>
+        @include("layouts.topbar")
         <!-- Begin Page Content -->
         <div class="container-fluid">
           <!-- Content Row -->
           <div class="row">
             <div class="col-12">
-              <?php 
-              if($viewParams['type'] == "public") {
+            @php
+            if ($folder["public"] == 1) {
                 $mTop = "50px";
                 $dirHeight = "75vh";
-              }
-              else {
+            }
+            else { 
                 $mTop = "auto";
                 $dirHeight = "64vh";
-              }
-              ?>
-              <h5 style="display: block; font-weight: bold; margin-left: 50px; margin-top: <?php echo $mTop?>; margin-bottom: 20px;">
-                <?php echo $viewParams['itemTitle'] ?>
+            }
+            @endphp
+              <h5 style="display: block; font-weight: bold; margin-left: 50px; margin-top: {{ $mTop }}; margin-bottom: 20px;">
+                <?php echo $folder["name"] ?>
               </h5>
-
-              <div style="display: block; width: 90%; height: <?php echo $dirHeight ?>; margin-left: 50px; margin-right: 50px; overflow-y: scroll; background: #fff; border: solid #eee;">
+              <div style="display: block; width: 90%; height: {{ $dirHeight }}; margin-left: 50px; margin-right: 50px; overflow-y: scroll; background: #fff; border: solid #eee;">
                 <div class="table-responsive">
                   <table class="table">
-                    <?php
-                    if (count($viewParams['itemList']) > 0)
-                      foreach ($viewParams['itemList'] as $item) {
-                    ?>
-                      <tr>
+                    @if (count($itemList) > 0)
+                    @foreach ($itemList as $item)
+                    <tr>
                         <td width="10%">
-                          <?php
-                          $icon = "./assets/img/";
+                          @php
+                          $icon = "img/";
                           if ($item['type'] == "folder") {
                             $icon .= getItemName($item['path']) != ".." ? "folder.png" : "return.png";
                           } else {
                             $icon .= "file.png";
                           }
-                          ?>
-                          <img src="<?php echo $icon ?>" width="28">
+                          @endphp
+                          <img src="{{ url($icon) }}" width="28">
                         </td>
                         <td width="40%">
-                          <?php
-                          if ($item['type'] == "folder"){?>
-                          <a href="?site=dirview&itemid=<?php echo $item['item_id'] ?>">
-                          <?php
-                          } else { ?>
-                          <a href='#' data-toggle='modal' data-target='#fileViewModal' onclick="fileView('<?php echo $item['item_id'] ?>', '<?php echo $item['type'] ?>')" >
-                          <?php 
-                          } ?>
-                          <?php echo getItemName($item['path']) ?>
+                          @if ($item['type'] == "folder")
+                          <a href="?site=dirview&itemid={{ $item['item_id'] }}">
+                          @else
+                          <a href='#' data-toggle='modal' data-target='#fileViewModal' onclick="fileView('{{ $item['item_id'] }}', '{{ $item['type'] }}')" >
+                          @endif
+                          {{ $folder["name"] }}
                           </a>
                         </td>
                         <td width="10%">
-                          <?php
-                          if (getItemName($item['path']) != "..") { ?>
+                          @if (getItemName($item['path']) != "..")
                             <div class="dropdown">
                               <button data-toggle="dropdown"><i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i></button>
                               <ul class="dropdown-menu" id="<?php echo "item__" . $item['item_id']; ?>">
-                                <?php if ($item['type'] != "folder") { ?>
+                                @if ($item['type'] != "folder")
                                   <li onclick="downloadItem(this)">Tải xuống</li>
-                                <?php } ?>
-                                <?php if($viewParams['type'] == "own"){ ?>
-                                <li data-toggle="modal" onclick="setShareItem(this)" data-target="#shareModal">Chia sẻ </li> <?php } ?>
-                                <?php 
-                                if($viewParams['type'] != "public"){ ?>
+                                @endif
+                                
+                                @if($viewParams['type'] == "own")
+                                <li data-toggle="modal" onclick="setShareItem(this)" data-target="#shareModal">Chia sẻ </li>
+                                @endif
+                                
+                                @if($viewParams['type'] != "public")
                                 <li data-toggle="modal" onclick="setRenameItem(this)" data-target="#renameModal">Đổi tên</li>
                                 <li data-toggle="modal" onclick="setDeleteItemId(this)" data-target="#deleteModal">Xóa</li> 
-                                <?php }
-                                else { ?>
+                                @else
                                 <li data-toggle="modal" onclick="alert('Bạn không có quyền để thực hiện mục này?')" data-target="#renameModal">Đổi tên</li>
-                                <li data-toggle="modal" onclick="alert('Bạn không có quyền để thực hiện mục này?')" data-target="#deleteModal">Xóa</li> <?php } ?>
+                                <li data-toggle="modal" onclick="alert('Bạn không có quyền để thực hiện mục này?')" data-target="#deleteModal">Xóa</li>
+                                @endif
                               </ul>
                             </div>
-                          <?php
-                          } ?>
+                          @endif
                         </td>
-                        <td width="20%"><?php if (getItemName($item['path']) != "..") echo $item['type']; ?></td>
-                        <td width="20%"><?php if (getItemName($item['path']) != "..") echo date("H:i:s d/m/Y", filemtime("Resource/" . $item['path'])); ?></td>
-                      </tr>
-                    <?php
-                      } ?>
+                        <td width="20%">
+                            @if (getItemName($item['path']) != "..") 
+                            {{ $item['type'] }}
+                            @endif
+                        </td>
+                        <td width="20%">
+                            @if (getItemName($item['path']) != "..") 
+                            {{ date("H:i:s d/m/Y", filemtime("Resource/" . $item['path'])) }}
+                            @endif 
+                        </td>
+                    </tr>
+                    @endforeach
+                    @endif
                     <tr>
                       <td colspan="5" height="150px" style="background-color: transparent;"></td>
                     </tr>
                   </table>
-                  <?php getModal("file.view", $viewParams) ?>
+                  @include("modals.file_view")
                 </div>
               </div>
             </div>
